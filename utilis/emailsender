@@ -1,0 +1,31 @@
+const nodemailer = require("nodemailer");
+require("dotenv").config();
+
+const transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: process.env.EMAIL_PORT,
+    secure: false,
+    auth: {
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_PASS,
+    },
+});
+
+// wysyłanie e-maila
+const sendWateringReminder = async (email, plantName, wateringDate) => {
+    const mailOptions = {
+        from: process.env.EMAIL_USER,
+        to: email,
+        subject: ` Czas podlać Twoją roślinę: ${plantName}!`,
+        text: `Hej!  Twoja roślina "${plantName}" wymaga podlania dnia ${wateringDate}. Nie zapomnij o niej! 😊`,
+    };
+
+    try {
+        await transporter.sendMail(mailOptions);
+        console.log(` Powiadomienie e-mail wysłane do ${email}`);
+    } catch (error) {
+        console.error(" Błąd wysyłania e-maila:", error);
+    }
+};
+
+module.exports = { sendWateringReminder };
